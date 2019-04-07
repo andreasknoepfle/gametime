@@ -9,7 +9,8 @@ defmodule Gametime.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      GametimeWeb.Endpoint
+      GametimeWeb.Endpoint,
+      GameMaster
       # Starts a worker by calling: Gametime.Worker.start_link(arg)
       # {Gametime.Worker, arg},
     ]

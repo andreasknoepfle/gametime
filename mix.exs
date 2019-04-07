@@ -32,6 +32,7 @@ defmodule Gametime.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:secure_random, "~> 0.5"},
       {:phoenix, "~> 1.4.3"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_html, "~> 2.11"},
