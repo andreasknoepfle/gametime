@@ -2,7 +2,7 @@ defmodule GametimeWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", GametimeWeb.RoomChannel
+  channel "game:lobby", GametimeWeb.GameChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
