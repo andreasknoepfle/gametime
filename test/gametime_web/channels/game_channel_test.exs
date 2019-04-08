@@ -3,7 +3,7 @@ defmodule GametimeWeb.GameChannelTest do
 
   setup do
     {:ok, _, socket} =
-      socket(GametimeWeb.UserSocket, "user_id", %{some: :assign})
+      socket(GametimeWeb.PlayerSocket, "user_id", %{some: :assign})
       |> subscribe_and_join(GametimeWeb.GameChannel, "game:lobby")
 
     {:ok, socket: socket}

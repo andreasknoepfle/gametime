@@ -1,7 +1,7 @@
 defmodule GametimeWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :gametime
 
-  socket "/socket", GametimeWeb.UserSocket,
+  socket "/socket", GametimeWeb.PlayerSocket,
     websocket: true,
     longpoll: false
 

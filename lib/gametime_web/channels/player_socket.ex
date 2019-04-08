@@ -1,8 +1,6 @@
-defmodule GametimeWeb.UserSocket do
+defmodule GametimeWeb.PlayerSocket do
   use Phoenix.Socket
 
-  ## Channels
-  # channel "room:*", GametimeWeb.RoomChannel
   channel "game", GametimeWeb.GameChannel
 
   # Socket params are passed from the client and can
@@ -30,5 +28,5 @@ defmodule GametimeWeb.UserSocket do
   #     GametimeWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(socket), do: socket.assigns.id
+  def id(socket), do: "player:#{socket.assigns.id}"
 end

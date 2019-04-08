@@ -39,9 +39,6 @@ defmodule GameMaster do
 
   @impl true
   def handle_cast(:tick, game) do
-    advanced_game = Game.advance(game)
-    GametimeWeb.Endpoint.broadcast("game", "tick", advanced_game.state)
-
-    {:noreply, advanced_game}
+    {:noreply, Game.advance(game, after: &tick/0)}
   end
 end
