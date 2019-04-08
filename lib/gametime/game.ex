@@ -2,7 +2,7 @@ defmodule Game do
   defstruct [:players, :state, :actions]
 
   def new() do
-    %__MODULE__{players: %{}, actions: %{}, state: Game.init()}
+    %__MODULE__{players: %{}, actions: %{}, state: init()}
   end
 
   def init() do
@@ -10,7 +10,7 @@ defmodule Game do
   end
 
   def reset(game) do
-    %{game | state: Game.init()}
+    %{game | state: init()}
   end
 
   def add_player(%{players: players} = game, player) do
