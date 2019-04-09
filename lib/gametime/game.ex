@@ -22,7 +22,7 @@ defmodule Game do
   end
 
   def add_player(%{players: players} = game, player) do
-    {:ok, state} = game.module.add_player(game.state, player)
+    {:ok, state} = game.module.add_player(game.state, player.id)
     %{game | state: state, players: Map.put(players, player.id, player)}
   end
 
