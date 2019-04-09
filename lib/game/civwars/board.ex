@@ -5,10 +5,10 @@ defmodule Civwars.Board do
   @height 100
   @villages 10
 
-  defstruct [:villages]
+  defstruct [:villages, :moves]
 
   def new do
-    %{
+    %__MODULE__{
       villages: %{},
       moves: []
     }
@@ -19,7 +19,7 @@ defmodule Civwars.Board do
     location = find_unoccupied_location(board)
     village = Village.new() |> Village.set_owner(player)
 
-    put_in(board[:villages][location], village)
+    update_village(board, location, fn _ -> village end)
   end
 
   def apply_actions(%__MODULE__{} = board, _actions) do
@@ -67,16 +67,23 @@ defmodule Civwars.Board do
   end
 
   defp resolve_conflicts({location, moves}, board) do
-    update_in(board[:villages][location], fn village ->
+    update_village(board, location, fn village ->
       Village.attack(village, moves)
     end)
   end
 
-  defp grow_villages(board) do
-    update_in(board[:villages], fn villages ->
+  defp grow_villages(%{villages: villages} = board) do
+    grown_villages =
       for {location, village} <- villages, into: %{} do
         {location, Village.grow(village)}
       end
-    end)
+
+    %{board | villages: grown_villages}
+  end
+
+  defp update_village(%{villages: villages} = board, location, callback) do
+    old_village = Map.get(villages, location)
+    new_village = callback.(old_village)
+    %{board | villages: Map.put(villages, location, new_village)}
   end
 end
