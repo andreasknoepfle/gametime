@@ -55,7 +55,7 @@ defmodule Game do
   end
 
   def notify_player(game, player) do
-    Player.tell(player, game.module.visible_state(game.state))
+    Player.tell(player, game.module.visible_state(player.id, game.state))
   end
 
   defp clear_actions(game) do

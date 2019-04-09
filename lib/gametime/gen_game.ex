@@ -6,7 +6,7 @@ defmodule GenGame do
   @callback init() :: {:ok, state()}
   @callback advance(state(), actions()) :: {advance_state}
   @callback add_player(state(), any()) :: {:ok, state()} | {:error, String.t}
-  @callback visible_state(state()) :: state()
+  @callback visible_state(any(), state()) :: state()
 
   defmacro __using__(_opts) do
     quote do
@@ -18,7 +18,7 @@ defmodule GenGame do
       def add_player(state, _player), do: {:ok, state}
       defoverridable add_player: 2
 
-      def visible_state(state), do: state
+      def visible_state(_, state), do: state
       defoverridable visible_state: 1
     end
   end
