@@ -15,14 +15,21 @@ defmodule Civwars.Board do
     |> place_villages(@villages)
   end
 
-  def apply_actions(board, _actions) do
+  def add_player(%__MODULE__{} = board, player) do
+    location = find_unoccupied_location(board)
+    village = Village.new() |> Village.set_owner(player)
+
+    put_in(board[:villages][location], village)
+  end
+
+  def apply_actions(%__MODULE__{} = board, _actions) do
     # TODO: implement
     board
   end
 
-  def advance(board) do
+  def advance(%__MODULE__{} = board) do
     board
-    |> advance_moves()
+    |> resolve_moves()
     |> grow_villages()
   end
 
@@ -46,7 +53,7 @@ defmodule Civwars.Board do
     end
   end
 
-  defp advance_moves(%__MODULE__{} = board) do
+  defp advance_moves(board) do
     {ongoing, arrived} =
       board.moves
       |> Enum.map(&Move.advance/1)
@@ -54,10 +61,15 @@ defmodule Civwars.Board do
 
     board_with_moves = %{board | moves: ongoing}
 
-    Enum.reduce(arrived, board_with_moves, fn move, b ->
-      update_in(b[:villages][move.to], fn village ->
-        Village.attack(village, move.owner, move.strenth)
-      end)
+    arrived
+    |> Enum.group_by(& &1.to)
+    |> Enum.reduce(board_with_moves, &resolve_conflicts/2)
+  end
+
+  defp resolve_conflicts([], board), do: board
+  defp resolve_conflicts([{location, moves} | rest], board) do
+    update_in(board[:villages][location], fn village ->
+      Village.attack(village, moves)
     end)
   end
 

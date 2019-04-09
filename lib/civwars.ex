@@ -9,7 +9,10 @@ defmodule Civwars do
   end
 
   def add_player(state, player) do
-    %{state | players: [player | state.players] }
+    new_players = [player | state.players]
+    new_board = Board.add_player(state.board, player)
+
+    %{state | players: new_players, board: new_board}
   end
 
   def advance(state, actions) do
