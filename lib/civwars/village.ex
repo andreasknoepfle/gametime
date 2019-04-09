@@ -1,8 +1,6 @@
 defmodule Civwars.Village do
   defstruct [:units, :owner]
 
-  alias Civwars.AttackResolution
-
   @initial_units 10
   @max_units 200
 
@@ -58,9 +56,5 @@ defmodule Civwars.Village do
     new()
     |> set_owner(winner)
     |> set_units(min(remaining_units, @max_units))
-  end
-
-  defp add_move(move, sum) do
-    %{sum | units: sum.units + move.units}
   end
 end

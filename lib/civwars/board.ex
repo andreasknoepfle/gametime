@@ -53,7 +53,7 @@ defmodule Civwars.Board do
     end
   end
 
-  defp advance_moves(board) do
+  defp resolve_moves(board) do
     {ongoing, arrived} =
       board.moves
       |> Enum.map(&Move.advance/1)
@@ -66,8 +66,7 @@ defmodule Civwars.Board do
     |> Enum.reduce(board_with_moves, &resolve_conflicts/2)
   end
 
-  defp resolve_conflicts([], board), do: board
-  defp resolve_conflicts([{location, moves} | rest], board) do
+  defp resolve_conflicts({location, moves}, board) do
     update_in(board[:villages][location], fn village ->
       Village.attack(village, moves)
     end)
