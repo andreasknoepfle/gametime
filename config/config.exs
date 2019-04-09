@@ -14,7 +14,9 @@ config :gametime, GametimeWeb.Endpoint,
   render_errors: [view: GametimeWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Gametime.PubSub, adapter: Phoenix.PubSub.PG2]
 
-config :gametime, Game, example: Game.Example
+config :gametime, games: %{
+  "example" => Game.Example
+}
 
 # Configures Elixir's Logger
 config :logger, :console,

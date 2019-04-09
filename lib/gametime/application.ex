@@ -12,8 +12,7 @@ defmodule Gametime.Application do
       GametimeWeb.Endpoint,
       # Starts a worker by calling: Gametime.Worker.start_link(arg)
       # {Gametime.Worker, arg},
-      {GameMaster, :example}
-    ]
+    ] ++ games()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -27,4 +26,10 @@ defmodule Gametime.Application do
     GametimeWeb.Endpoint.config_change(changed, removed)
     :ok
   end
-end
+
+  def games do
+    Application.get_env(:gametime, :games)
+    |> Map.values
+    |> Enum.map(fn game -> {GameMaster, game} end)
+  end
+ end

@@ -4,7 +4,7 @@ defmodule GametimeWeb.GameChannel do
   def join("game:" <> game_name, %{"name" => name}, %{assigns: %{id: player_id}} = socket) do
     :ok = GametimeWeb.Endpoint.subscribe("player:" <> player_id)
 
-    String.to_existing_atom(game_name)
+    game(game_name)
     |> GameMaster.join(SocketPlayer.new(player_id, name))
 
     {:ok, socket}
@@ -15,7 +15,7 @@ defmodule GametimeWeb.GameChannel do
         %{"actions" => actions},
         %{topic: "game:" <> game_name, assigns: %{id: player_id}} = socket
       ) do
-    String.to_existing_atom(game_name)
+    game(game_name)
     |> GameMaster.act(player_id, actions)
 
     {:reply, {:thanks, %{}}, socket}
@@ -25,5 +25,10 @@ defmodule GametimeWeb.GameChannel do
   def handle_info(%Broadcast{topic: _, event: event, payload: payload}, socket) do
     push(socket, event, payload)
     {:noreply, socket}
+  end
+
+  defp game(name) do
+    Application.get_env(:gametime, :games)
+    |> Map.get(name)
   end
 end

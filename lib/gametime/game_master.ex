@@ -1,30 +1,30 @@
 defmodule GameMaster do
   use GenServer
 
-  def start_link(game_name) do
-    GenServer.start_link(__MODULE__, game_name, name: game_name)
+  def start_link(game_module) do
+    GenServer.start_link(__MODULE__, game_module, name: game_module)
   end
 
-  def join(game_name, player) do
-    GenServer.call(game_name, {:join, player})
+  def join(game_module, player) do
+    GenServer.call(game_module, {:join, player})
   end
 
-  def start_round(game_name) do
-    GenServer.cast(game_name, :start_round)
+  def start_round(game_module) do
+    GenServer.cast(game_module, :start_round)
   end
 
-  def act(game_name, player_id, actions) do
-    GenServer.call(game_name, {:act, player_id, actions})
+  def act(game_module, player_id, actions) do
+    GenServer.call(game_module, {:act, player_id, actions})
   end
 
   @impl true
-  def init(game_name) do
-    {:ok, Game.new(game_name)}
+  def init(game_module) do
+    {:ok, Game.new(game_module)}
   end
 
   @impl true
   def handle_call({:join, player}, from, %{started: false} = game) do
-    start_round(game.name)
+    start_round(game.module)
     handle_call({:join, player}, from, Game.start(game))
   end
   def handle_call({:join, player}, _, game) do
@@ -37,6 +37,6 @@ defmodule GameMaster do
 
   @impl true
   def handle_cast(:start_round, game) do
-    {:noreply, Game.advance(game, after: fn -> start_round(game.name) end)}
+    {:noreply, Game.advance(game, after: fn -> start_round(game.module) end)}
   end
 end

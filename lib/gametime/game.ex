@@ -1,11 +1,9 @@
 defmodule Game do
   defstruct [:name, :players, :state, :actions, :module, :started]
 
-  def new(name) do
-    module = find_module(name)
+  def new(module) do
     {:ok, state} = module.init()
     %__MODULE__{
-      name: name,
       module: module,
       players: %{},
       actions: %{},
@@ -62,9 +60,5 @@ defmodule Game do
 
   defp clear_actions(game) do
     %{game | actions: %{}}
-  end
-
-  defp find_module(_name) do
-    Game.Example
   end
 end
