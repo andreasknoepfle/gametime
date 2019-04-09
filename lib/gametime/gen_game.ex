@@ -10,7 +10,7 @@ defmodule GenGame do
 
   defmacro __using__(_opts) do
     quote do
-      @behaviour __MODULE__
+      @behaviour GenGame
 
       def init, do: {:ok, %{}}
       defoverridable init: 0

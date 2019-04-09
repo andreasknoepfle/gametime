@@ -15,7 +15,8 @@ config :gametime, GametimeWeb.Endpoint,
   pubsub: [name: Gametime.PubSub, adapter: Phoenix.PubSub.PG2]
 
 config :gametime, games: %{
-  "example" => Game.Example
+  "example" => Game.Example,
+  "civwars" => Game.Civwars
 }
 
 # Configures Elixir's Logger

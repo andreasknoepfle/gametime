@@ -8,6 +8,6 @@ end
 
 defimpl Player, for: SocketPlayer do
   def tell(player, state) do
-    GametimeWeb.Endpoint.broadcast!("player:" <> player.id, "tell", %{})
+    GametimeWeb.Endpoint.broadcast!("player:" <> player.id, "tell", state)
   end
 end
