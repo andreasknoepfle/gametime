@@ -26,21 +26,21 @@ defmodule Civwars.Board do
     |> grow_villages()
   end
 
-  defp place_villages(map, 0), do: map
-  defp place_villages(map, n) do
-    location = find_unoccupied_location(map)
+  defp place_villages(board, 0), do: board
+  defp place_villages(board, n) do
+    location = find_unoccupied_location(board)
     village = Village.new()
 
-    map_with_villages =
-      %{map | villages: Map.put(map.villages, location, village)}
+    board_with_villages =
+      %{board | villages: Map.put(board.villages, location, village)}
 
-    place_villages(map_with_villages, n - 1)
+    place_villages(board_with_villages, n - 1)
   end
 
-  defp find_unoccupied_location(map) do
+  defp find_unoccupied_location(board) do
     location = Location.new(:rand.uniform(@height), :rand.uniform(@width))
-    if Map.has_key?(map.villages, location) do
-      find_unoccupied_location(map)
+    if Map.has_key?(board.villages, location) do
+      find_unoccupied_location(board)
     else
       location
     end
