@@ -1,15 +1,15 @@
 defmodule Civwars.Move do
   alias Civwars.Location
 
-  defstruct [:to, :distance, :strength, :owner]
+  defstruct [:to, :distance, :units, :owner]
 
   @speed 5
 
-  def new(%Location{} = from, %Location{} = to, strength, owner) do
+  def new(%Location{} = from, %Location{} = to, units, owner) do
     %__MODULE__{
       to: to,
       distance: Location.distance(from, to),
-      strength: strength,
+      units: units,
       owner: owner
     }
   end
