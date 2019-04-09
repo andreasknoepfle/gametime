@@ -6,6 +6,7 @@ defmodule Game.Example do
   end
 
   def advance(%{turn: turn} = state, actions) do
+    IO.inspect(state)
     new_state =
       state
       |> Map.put(:turn, turn + 1)

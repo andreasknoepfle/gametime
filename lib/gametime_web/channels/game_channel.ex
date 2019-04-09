@@ -13,7 +13,7 @@ defmodule GametimeWeb.GameChannel do
   def handle_in(
         "act",
         %{"actions" => actions},
-        %{topic: "game" <> game_name, assigns: %{id: player_id}} = socket
+        %{topic: "game:" <> game_name, assigns: %{id: player_id}} = socket
       ) do
     String.to_existing_atom(game_name)
     |> GameMaster.act(player_id, actions)

@@ -33,6 +33,6 @@ defmodule GameMaster do
 
   @impl true
   def handle_cast(:tick, game) do
-    {:noreply, Game.advance(game, after: fn -> tick(self()) end)}
+    {:noreply, Game.advance(game, after: fn -> tick(game.name) end)}
   end
 end
