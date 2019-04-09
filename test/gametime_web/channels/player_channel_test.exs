@@ -1,10 +1,10 @@
-defmodule GametimeWeb.GameChannelTest do
+defmodule GametimeWeb.PlayerChannelTest do
   use GametimeWeb.ChannelCase
 
   setup do
     {:ok, _, socket} =
-      socket(GametimeWeb.PlayerSocket, "user_id", %{some: :assign})
-      |> subscribe_and_join(GametimeWeb.GameChannel, "game:lobby")
+      socket(GametimeWeb.UserSocket, "user_id", %{some: :assign})
+      |> subscribe_and_join(GametimeWeb.PlayerChannel, "player:lobby")
 
     {:ok, socket: socket}
   end
@@ -14,7 +14,7 @@ defmodule GametimeWeb.GameChannelTest do
     assert_reply ref, :ok, %{"hello" => "there"}
   end
 
-  test "shout broadcasts to game:lobby", %{socket: socket} do
+  test "shout broadcasts to player:lobby", %{socket: socket} do
     push(socket, "shout", %{"hello" => "all"})
     assert_broadcast "shout", %{"hello" => "all"}
   end

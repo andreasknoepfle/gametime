@@ -1,18 +1,13 @@
 defmodule SocketPlayer do
-  defstruct [:id, :name, :socket]
+  defstruct [:id, :name]
 
-  def id(socket) do
-    GametimeWeb.PlayerSocket.id(socket)
-  end
-
-  def new(name, socket) do
-    %__MODULE__{id: id(socket), name: name, socket: socket}
+  def new(id, name) do
+    %__MODULE__{id: id, name: name}
   end
 end
 
 defimpl Player, for: SocketPlayer do
   def tell(player, state) do
-    # GametimeWeb.Endpoint.broadcast(player.id, "tell", state)
-    GametimeWeb.GameChannel.tell(player.socket, state)
+    GametimeWeb.Endpoint.broadcast!("player:" <> player.id, "tell", %{})
   end
 end

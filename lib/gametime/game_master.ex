@@ -1,44 +1,38 @@
 defmodule GameMaster do
   use GenServer
 
-  def start_link(state) do
-    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+  def start_link(game_name) do
+    GenServer.start_link(__MODULE__, game_name, name: game_name)
   end
 
-  def state() do
-    GenServer.call(__MODULE__, :state)
+  def join(game_name, player) do
+    GenServer.call(game_name, {:join, player})
   end
 
-  def join(player) do
-    GenServer.call(__MODULE__, {:join, player})
+  def tick(game_name) do
+    GenServer.cast(game_name, :tick)
   end
 
-  def tick do
-    GenServer.cast(__MODULE__, :tick)
-  end
-
-  def act(player_id, actions) do
-    GenServer.call(__MODULE__, {:act, player_id, actions})
+  def act(game_name, player_id, actions) do
+    GenServer.call(game_name, {:act, player_id, actions})
   end
 
   @impl true
-  def init(_) do
-    {:ok, Game.new()}
+  def init(game_name) do
+    {:ok, Game.new(game_name)}
   end
 
   @impl true
   def handle_call({:join, player}, _, game) do
     {:reply, :ok, Game.add_player(game, player)}
   end
-  def handle_call(:state, _, game) do
-    {:reply, game, game}
-  end
+
   def handle_call({:act, player_id, actions}, _, game) do
-    {:reply, :ok, Game.act(game, player_id, actions) }
+    {:reply, :ok, Game.act(game, player_id, actions)}
   end
 
   @impl true
   def handle_cast(:tick, game) do
-    {:noreply, Game.advance(game, after: &tick/0)}
+    {:noreply, Game.advance(game, after: fn -> tick(self()) end)}
   end
 end

@@ -10,9 +10,9 @@ defmodule Gametime.Application do
     children = [
       # Start the endpoint when the application starts
       GametimeWeb.Endpoint,
-      GameMaster
       # Starts a worker by calling: Gametime.Worker.start_link(arg)
       # {Gametime.Worker, arg},
+      {GameMaster, :example}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

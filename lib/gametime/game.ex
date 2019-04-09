@@ -1,20 +1,26 @@
 defmodule Game do
-  defstruct [:players, :state, :actions]
+  defstruct [:name, :players, :state, :actions, :module]
 
-  def new() do
-    %__MODULE__{players: %{}, actions: %{}, state: init()}
-  end
-
-  def init() do
-    %{}
+  def new(name) do
+    module = find_module(name)
+    {:ok, state} = module.init()
+    %__MODULE__{
+      name: name,
+      module: module,
+      players: %{},
+      actions: %{},
+      state: state
+    }
   end
 
   def reset(game) do
-    %{game | state: init()}
+    {:ok, state} = game.module.init()
+    %{game | state: state}
   end
 
   def add_player(%{players: players} = game, player) do
-    %{game | players: Map.put(players, player.id, player)}
+    {:ok, state} = game.module.add_player(game.state, player)
+    %{game | state: state, players: Map.put(players, player.id, player)}
   end
 
   def act(%{actions: actions} = game, player_id, player_actions) do
@@ -22,24 +28,38 @@ defmodule Game do
   end
 
   def advance(game, after: callback) do
-    game
-    |> schedule_turn(callback)
-    |> notify_players
-    |> clear_actions
+    case game.module.advance(game.state, game.actions) do
+      {:new_turn, state} ->
+        schedule_turn(%{game | state: state}, callback)
+
+      {:finish, state} ->
+        %{game | state: state}
+    end
   end
 
   defp schedule_turn(game, callback) do
     Map.put(game, :turn, Turn.start(callback))
+    |> notify_players()
+    |> clear_actions()
   end
 
   defp notify_players(game) do
     game.players
-    |> Map.values
-    |> Enum.each(fn player -> Player.tell(player, game.state) end)
+    |> Map.values()
+    |> Enum.each(fn player -> notify_player(game, player) end)
+
     game
+  end
+
+  def notify_player(game, player) do
+    Player.tell(player, game.module.visible_state(game.state))
   end
 
   defp clear_actions(game) do
     %{game | actions: %{}}
+  end
+
+  defp find_module(_name) do
+    Game.Example
   end
 end

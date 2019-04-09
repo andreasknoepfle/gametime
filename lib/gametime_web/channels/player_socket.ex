@@ -1,7 +1,7 @@
 defmodule GametimeWeb.PlayerSocket do
   use Phoenix.Socket
 
-  channel "game", GametimeWeb.GameChannel
+  channel "game:*", GametimeWeb.GameChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -15,7 +15,7 @@ defmodule GametimeWeb.PlayerSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   def connect(params, socket, _connect_info) do
-    {:ok, assign(socket, :id, Map.get(params, "uuid", SecureRandom.uuid())}
+    {:ok, assign(socket, :id, Map.get(params, "uuid", SecureRandom.uuid()))}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -28,5 +28,5 @@ defmodule GametimeWeb.PlayerSocket do
   #     GametimeWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(socket), do: "player:#{socket.assigns.id}"
+  def id(socket), do: "player_socket:#{socket.assigns.id}"
 end

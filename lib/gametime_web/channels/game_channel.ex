@@ -1,23 +1,25 @@
 defmodule GametimeWeb.GameChannel do
   use GametimeWeb, :channel
 
-  def join("game", %{"name" => name}, socket) do
-    send(self, {:add_player, name})
+  def join("game:" <> game_name, %{"name" => name}, %{assigns: %{id: player_id}} = socket) do
+    :ok = GametimeWeb.Endpoint.subscribe("player:" <> player_id)
+    GameMaster.join(String.to_existing_atom(game_name), SocketPlayer.new(player_id, name))
     {:ok, socket}
   end
 
-  def tell(socket, state) do
-    push(socket, "tell", state)
-  end
+  def handle_in(
+        "act",
+        %{"actions" => actions},
+        %{topic: "game" <> name, assigns: %{id: player_id}} = socket
+      ) do
+    GameMaster.act(name, player_id, actions)
 
-  def handle_info({:add_player, name}, socket) do
-    GameMaster.join(SocketPlayer.new(name, socket))
-    {:noreply, socket}
-  end
-
-  def handle_in("act", %{"actions" => actions}, socket) do
-    SocketPlayer.id(socket)
-    |> GameMaster.act(actions)
     {:reply, {:thanks, %{}}, socket}
+  end
+
+  alias Phoenix.Socket.Broadcast
+  def handle_info(%Broadcast{topic: _, event: event, payload: payload}, socket) do
+    push(socket, event, payload)
+    {:noreply, socket}
   end
 end
