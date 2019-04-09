@@ -1,6 +1,13 @@
 defmodule GameMaster do
   use GenServer
 
+  def child_spec(game_module) do
+    %{
+      id: game_module,
+      start: {GameMaster, :start_link, [game_module]}
+    }
+  end
+
   def start_link(game_module) do
     GenServer.start_link(__MODULE__, game_module, name: game_module)
   end

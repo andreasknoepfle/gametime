@@ -16,7 +16,7 @@ config :gametime, GametimeWeb.Endpoint,
 
 config :gametime, games: %{
   "example" => Game.Example,
-  "civwars" => Game.Civwars
+  "civwars" => Civwars
 }
 
 # Configures Elixir's Logger
