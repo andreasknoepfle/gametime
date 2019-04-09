@@ -39,4 +39,9 @@ defmodule Civwars do
 
     {:new_turn, new_state}
   end
+
+  def visible_state(_, state) do
+    IO.inspect(state)
+    %{}
+  end
 end

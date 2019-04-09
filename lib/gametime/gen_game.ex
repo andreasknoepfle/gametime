@@ -19,7 +19,7 @@ defmodule GenGame do
       defoverridable add_player: 2
 
       def visible_state(_, state), do: state
-      defoverridable visible_state: 1
+      defoverridable visible_state: 2
     end
   end
 end
