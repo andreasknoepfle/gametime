@@ -19,11 +19,14 @@ defmodule GameMaster do
 
   @impl true
   def init(game_name) do
-    start_round(game_name)
     {:ok, Game.new(game_name)}
   end
 
   @impl true
+  def handle_call({:join, player}, from, %{started: false} = game) do
+    start_round(game.name)
+    handle_call({:join, player}, from, Game.start(game))
+  end
   def handle_call({:join, player}, _, game) do
     {:reply, :ok, Game.add_player(game, player)}
   end

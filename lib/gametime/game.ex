@@ -1,5 +1,5 @@
 defmodule Game do
-  defstruct [:name, :players, :state, :actions, :module]
+  defstruct [:name, :players, :state, :actions, :module, :started]
 
   def new(name) do
     module = find_module(name)
@@ -9,8 +9,13 @@ defmodule Game do
       module: module,
       players: %{},
       actions: %{},
-      state: state
+      state: state,
+      started: false
     }
+  end
+
+  def start(game) do
+    %{game | started: true}
   end
 
   def reset(game) do
