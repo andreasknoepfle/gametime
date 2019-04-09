@@ -9,8 +9,8 @@ defmodule GameMaster do
     GenServer.call(game_name, {:join, player})
   end
 
-  def tick(game_name) do
-    GenServer.cast(game_name, :tick)
+  def start_round(game_name) do
+    GenServer.cast(game_name, :start_round)
   end
 
   def act(game_name, player_id, actions) do
@@ -19,6 +19,7 @@ defmodule GameMaster do
 
   @impl true
   def init(game_name) do
+    start_round(game_name)
     {:ok, Game.new(game_name)}
   end
 
@@ -32,7 +33,7 @@ defmodule GameMaster do
   end
 
   @impl true
-  def handle_cast(:tick, game) do
-    {:noreply, Game.advance(game, after: fn -> tick(game.name) end)}
+  def handle_cast(:start_round, game) do
+    {:noreply, Game.advance(game, after: fn -> start_round(game.name) end)}
   end
 end
