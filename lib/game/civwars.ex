@@ -35,14 +35,18 @@ defmodule Civwars do
   def advance(%Board{} = board, actions) do
     new_board =
       actions
-      |> Enum.reduce(board, fn action, board ->
-        {_result, board_with_move} =
-          Board.move(board, action.player, action.from, action.to)
-
-        board_with_move
-      end)
+      |> Enum.reduce(board, &apply_player_actions/2)
       |> Board.advance()
 
     {:new_turn, new_board}
+  end
+
+  defp apply_player_actions({player_id, player_actions}, board) do
+    Enum.reduce(player_actions, board, fn action, board ->
+      {_result, board_with_move} =
+        Board.move(board, player_id, action.from, action.to)
+
+      board_with_move
+    end)
   end
 end
