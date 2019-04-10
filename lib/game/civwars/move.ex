@@ -1,22 +1,20 @@
 defmodule Civwars.Move do
-  alias Civwars.Location
-
   @derive Jason.Encoder
   defstruct [:to, :distance, :units, :owner]
 
   @speed 5
 
-  def new(%Location{} = from, %Location{} = to, units, owner) do
+  def new(to, distance, units, owner) do
     %__MODULE__{
       to: to,
-      distance: Location.distance(from, to),
+      distance: distance,
       units: units,
       owner: owner
     }
   end
 
   def advance(%__MODULE__{distance: distance} = move) do
-    %{move | distance: min(distance - @speed, 0)}
+    %{move | distance: max(distance - @speed, 0)}
   end
 
   def arrived?(%__MODULE__{distance: 0}), do: true

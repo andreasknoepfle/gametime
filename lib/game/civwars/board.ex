@@ -6,7 +6,7 @@ defmodule Civwars.Board do
 
   @width 100
   @height 100
-  @villages 10
+  @villages 4
 
   def new do
     %__MODULE__{
@@ -16,7 +16,7 @@ defmodule Civwars.Board do
     |> place_villages(@villages)
   end
 
-  def add_player(%__MODULE__{} = board, player) do
+  def spawn(%__MODULE__{} = board, player) do
     village =
       board
       |> find_unoccupied_location()
@@ -26,9 +26,29 @@ defmodule Civwars.Board do
     add_village(board, village)
   end
 
-  def apply_actions(%__MODULE__{} = board, _actions) do
-    # TODO: implement
-    board
+  def move(%__MODULE__{} = board, player, from, to) do
+    source = Map.get(board.villages, from)
+    target = Map.get(board.villages, to)
+
+    with :ok <- validate_source_village(source, player),
+         :ok <- validate_target_village(target),
+         distance <- Location.distance(source.location, target.location) do
+
+      {source_without_units, units} = Village.recruit_attack_party(source)
+
+      move = Move.new(to, distance, units, player)
+
+      new_board =
+        %{
+          board |
+          moves: [move | board.moves],
+          villages: Map.put(board.villages, from, source_without_units)
+        }
+
+      {:ok, new_board}
+    else
+      msg -> {msg, board}
+    end
   end
 
   def advance(%__MODULE__{} = board) do
@@ -67,7 +87,7 @@ defmodule Civwars.Board do
   end
 
   defp resolve_moves(board) do
-    {ongoing, arrived} =
+    {arrived, ongoing} =
       board.moves
       |> Enum.map(&Move.advance/1)
       |> Enum.split_with(&Move.arrived?/1)
@@ -101,4 +121,12 @@ defmodule Civwars.Board do
     name = villages |> Map.size() |> to_string()
     %{board | villages: Map.put(villages, name, village)}
   end
+
+  defp validate_source_village(nil, _), do: :unknown_source_village
+  defp validate_source_village(%{owner: x}, player) when player != x, do: :foreign_source_village
+  defp validate_source_village(%{units: 0}, _), do: :not_enough_units
+  defp validate_source_village(_, _), do: :ok
+
+  defp validate_target_village(nil), do: :unknown_target_village
+  defp validate_target_village(_), do: :ok
 end

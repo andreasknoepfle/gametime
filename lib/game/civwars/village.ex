@@ -59,4 +59,13 @@ defmodule Civwars.Village do
     |> set_owner(winner)
     |> set_units(min(remaining_units, @max_units))
   end
+
+  def recruit_attack_party(%__MODULE__{} = village) do
+    units =
+      (village.units / 2)
+      |> :math.ceil()
+      |> trunc()
+
+    {%{village | units: (village.units - units)}, units}
+  end
 end
