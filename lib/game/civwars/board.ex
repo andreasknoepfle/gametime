@@ -1,11 +1,12 @@
 defmodule Civwars.Board do
   alias Civwars.{Location, Move, Village}
 
+  @derive Jason.Encoder
+  defstruct [:villages, :moves]
+
   @width 100
   @height 100
   @villages 10
-
-  defstruct [:villages, :moves]
 
   def new do
     %__MODULE__{
@@ -16,10 +17,13 @@ defmodule Civwars.Board do
   end
 
   def add_player(%__MODULE__{} = board, player) do
-    location = find_unoccupied_location(board)
-    village = Village.new() |> Village.set_owner(player)
+    village =
+      board
+      |> find_unoccupied_location()
+      |> Village.new()
+      |> Village.set_owner(player)
 
-    update_village(board, location, fn _ -> village end)
+    add_village(board, village)
   end
 
   def apply_actions(%__MODULE__{} = board, _actions) do
@@ -35,22 +39,31 @@ defmodule Civwars.Board do
 
   defp place_villages(board, 0), do: board
   defp place_villages(board, n) do
-    location = find_unoccupied_location(board)
-    village = Village.new()
+    village =
+      board
+      |> find_unoccupied_location()
+      |> Village.new()
 
-    board_with_villages =
-      %{board | villages: Map.put(board.villages, location, village)}
+    add_village(board, village)
 
-    place_villages(board_with_villages, n - 1)
+    board
+    |> add_village(village)
+    |> place_villages(n - 1)
   end
 
   defp find_unoccupied_location(board) do
     location = Location.new(:rand.uniform(@height), :rand.uniform(@width))
-    if Map.has_key?(board.villages, location) do
+    if location_occupied?(board, location) do
       find_unoccupied_location(board)
     else
       location
     end
+  end
+
+  defp location_occupied?(board, location) do
+    Enum.any?(board.villages, fn {_, village} ->
+      village.location == location
+    end)
   end
 
   defp resolve_moves(board) do
@@ -66,24 +79,26 @@ defmodule Civwars.Board do
     |> Enum.reduce(board_with_moves, &resolve_conflicts/2)
   end
 
-  defp resolve_conflicts({location, moves}, board) do
-    update_village(board, location, fn village ->
-      Village.attack(village, moves)
-    end)
+  defp resolve_conflicts({village_name, moves}, board) do
+    resolved =
+      board.villages
+      |> Map.get(village_name)
+      |> Village.attack(moves)
+
+    %{board | villages: Map.put(board.villages, village_name, resolved)}
   end
 
   defp grow_villages(%{villages: villages} = board) do
     grown_villages =
-      for {location, village} <- villages, into: %{} do
-        {location, Village.grow(village)}
+      for {name, village} <- villages, into: %{} do
+        {name, Village.grow(village)}
       end
 
     %{board | villages: grown_villages}
   end
 
-  defp update_village(%{villages: villages} = board, location, callback) do
-    old_village = Map.get(villages, location)
-    new_village = callback.(old_village)
-    %{board | villages: Map.put(villages, location, new_village)}
+  defp add_village(%{villages: villages} = board, village) do
+    name = villages |> Map.size() |> to_string()
+    %{board | villages: Map.put(villages, name, village)}
   end
 end

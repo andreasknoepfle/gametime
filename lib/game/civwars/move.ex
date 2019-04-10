@@ -1,6 +1,7 @@
 defmodule Civwars.Move do
   alias Civwars.Location
 
+  @derive Jason.Encoder
   defstruct [:to, :distance, :units, :owner]
 
   @speed 5

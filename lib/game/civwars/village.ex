@@ -1,11 +1,13 @@
 defmodule Civwars.Village do
-  defstruct [:units, :owner]
+  @derive Jason.Encoder
+  defstruct [:location, :units, :owner]
 
   @initial_units 10
   @max_units 200
 
-  def new do
+  def new(location) do
     %__MODULE__{
+      location: location,
       units: @initial_units,
       owner: nil
     }
@@ -53,7 +55,7 @@ defmodule Civwars.Village do
           winner_units - second_units
       end
 
-    new()
+    village
     |> set_owner(winner)
     |> set_units(min(remaining_units, @max_units))
   end

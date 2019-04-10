@@ -1,4 +1,5 @@
 defmodule Civwars.Location do
+  @derive Jason.Encoder
   defstruct [:x, :y]
 
   def new(x, y) do
