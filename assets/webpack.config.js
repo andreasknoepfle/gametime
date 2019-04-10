@@ -13,10 +13,11 @@ module.exports = (env, options) => ({
     ]
   },
   entry: {
-      './js/app.js': ['./js/app.js'].concat(glob.sync('./vendor/**/*.js'))
+    'app.js': ['./js/app.js'].concat(glob.sync('./vendor/**/*.js')),
+    'example.js': ['./js/example.js'].concat(glob.sync('./vendor/**/*.js'))
   },
   output: {
-    filename: 'app.js',
+    filename: '[name]',
     path: path.resolve(__dirname, '../priv/static/js')
   },
   module: {
@@ -31,6 +32,24 @@ module.exports = (env, options) => ({
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader']
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: "file-loader",
+        options: {
+          name: "[name].[ext]",
+          outputPath: "../static/fonts/",
+          publicPath: "../fonts/"
+        }
+      },
+      {
+        test: /\.(jpg|png|gif)$/,
+        loader: "file-loader",
+        options: {
+          name: "[name].[ext]",
+          outputPath: "../static/images/",
+          publicPath: "../images/"
+        }
       }
     ]
   },
