@@ -9,8 +9,9 @@
   </head>
   <body>
     <header>
-      <section class="container">
+      <section class="container nes-container with-title is-centered">
         <nav role="navigation">
+          Gametime
         </nav>
       </section>
     </header>

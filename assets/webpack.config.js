@@ -47,7 +47,7 @@ module.exports = (env, options) => ({
         loader: "file-loader",
         options: {
           name: "[name].[ext]",
-          outputPath: "../static/images/",
+          outputPath: "../images/",
           publicPath: "../images/"
         }
       }
