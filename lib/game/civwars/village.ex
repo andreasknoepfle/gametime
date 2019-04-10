@@ -4,6 +4,7 @@ defmodule Civwars.Village do
 
   @initial_units 10
   @max_units 200
+  @growth_factor 1.1
 
   def new(location) do
     %__MODULE__{
@@ -17,17 +18,14 @@ defmodule Civwars.Village do
   def set_units(%__MODULE__{} = village, units), do: %{village | units: units}
 
   def grow(%__MODULE__{units: 0} = village), do: village
-  def grow(%__MODULE__{units: @max_units} = village), do: village
   def grow(%__MODULE__{owner: nil} = village), do: village
   def grow(%__MODULE__{} = village) do
-    children =
-      village.units
-      |> :math.log()
-      |> :math.pow(2)
+    units =
+      (village.units * @growth_factor)
       |> :math.ceil()
       |> trunc()
 
-    %{village | units: village.units + children}
+    %{village | units: min(@max_units, units)}
   end
 
   def attack(%__MODULE__{} = village, incoming_moves) do

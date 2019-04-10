@@ -53,8 +53,8 @@ defmodule Civwars.Board do
 
   def advance(%__MODULE__{} = board) do
     board
-    |> resolve_moves()
     |> grow_villages()
+    |> resolve_moves()
   end
 
   defp place_villages(board, 0), do: board

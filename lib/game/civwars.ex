@@ -6,14 +6,14 @@ defmodule Civwars do
     init()
     |> elem(1)
     |> add_player("Andi")
-    |> elem(1)
+    |> simulate_turns(5)
     |> advance([%{player: "Andi", from: "4", to: "0"}])
     |> simulate_turns(10)
   end
 
-  def simulate_turns(_, 0), do: IO.puts("DONE")
-  def simulate_turns({:new_turn, board}, n) do
-    IO.puts("======= REMAINING TURNS #{n} =======")
+  def simulate_turns({_, board}, 0), do: board
+  def simulate_turns({_, board}, n) do
+    IO.puts("======= TURN =======")
 
     board
     |> IO.inspect()
