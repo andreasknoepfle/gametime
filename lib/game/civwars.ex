@@ -2,6 +2,25 @@ defmodule Civwars do
   use GenGame
   alias Civwars.Board
 
+  def simulate do
+    init()
+    |> elem(1)
+    |> add_player("Andi")
+    |> elem(1)
+    |> advance([%{player: "Andi", from: "4", to: "0"}])
+    |> simulate_turns(10)
+  end
+
+  def simulate_turns(_, 0), do: IO.puts("DONE")
+  def simulate_turns({:new_turn, board}, n) do
+    IO.puts("======= REMAINING TURNS #{n} =======")
+
+    board
+    |> IO.inspect()
+    |> advance([])
+    |> simulate_turns(n - 1)
+  end
+
   @impl true
   def init do
     {:ok, Board.new()}
