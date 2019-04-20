@@ -15,6 +15,7 @@ defmodule Game do
 
   def start(game) do
     %{game | started: true}
+    |> update_live_views("started")
   end
 
   def reset(game) do
@@ -70,6 +71,9 @@ defmodule Game do
   end
   defp update_live_views(game = %{players: players}, event = "players") do
     update_live_views(game, event, players)
+  end
+  defp update_live_views(game, event) do
+    update_live_views(game, event, %{})
   end
   defp update_live_views(game = %{cassette: cassette}, event, payload) do
     GametimeWeb.Endpoint.broadcast("game:state:" <> cassette.name, event, payload)

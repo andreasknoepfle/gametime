@@ -1,5 +1,9 @@
 <div>
   <h1><%= @cassette.display_name %></h1>
+  <%= if(!@started) do %>
+    <button phx-click="start">Start</button>
+  <% end %>
+  <button phx-click="reset">Reset</button>
   <h2>Players:</h2>
   <ul>
     <%= for {_, player} <- @players do %>
