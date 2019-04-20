@@ -1,0 +1,21 @@
+<section class="message-list">
+  <section class="message -left">
+    <i class="nes-kirby"></i>
+    <div class="nes-balloon from-left">
+      <p>It's time to play!</p>
+    </div>
+  </section>
+
+  <section class="message -right">
+    <div class="nes-balloon from-right">
+      <p>Choose your game:</p>
+    </div>
+    <i class="nes-mario" ></i>
+  </section>
+</section>
+
+<ul class="nes-list is-disc">
+  <%= for cassette <- cassettes do %>
+    <li><%= link(cassette.display_name, to: "/games/" <> cassette.name) %></li>
+  <% end %>
+</ul>

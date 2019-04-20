@@ -28,8 +28,7 @@ defmodule Gametime.Application do
   end
 
   def games do
-    Application.get_env(:gametime, :games)
-    |> Map.values
-    |> Enum.map(fn game -> {GameMaster, game} end)
+    Cassette.all
+    |> Enum.map(fn cassette -> {GameMaster, cassette} end)
   end
  end

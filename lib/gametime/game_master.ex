@@ -1,37 +1,41 @@
 defmodule GameMaster do
   use GenServer
 
-  def child_spec(game_module) do
+  def child_spec(cassette) do
     %{
-      id: game_module,
-      start: {GameMaster, :start_link, [game_module]}
+      id: cassette.module,
+      start: {GameMaster, :start_link, [cassette]}
     }
   end
 
-  def start_link(game_module) do
-    GenServer.start_link(__MODULE__, game_module, name: game_module)
+  def start_link(cassette) do
+    GenServer.start_link(__MODULE__, cassette, name: cassette.module)
   end
 
-  def join(game_module, player) do
-    GenServer.call(game_module, {:join, player})
+  def join(cassette, player) do
+    GenServer.call(cassette.module, {:join, player})
   end
 
-  def start_round(game_module) do
-    GenServer.cast(game_module, :start_round)
+  def start_round(cassette) do
+    GenServer.cast(cassette.module, :start_round)
   end
 
-  def act(game_module, player_id, actions) do
-    GenServer.call(game_module, {:act, player_id, actions})
+  def act(cassette, player_id, actions) do
+    GenServer.call(cassette.module, {:act, player_id, actions})
+  end
+
+  def players(cassette) do
+    GenServer.call(cassette.module, :players)
   end
 
   @impl true
-  def init(game_module) do
-    {:ok, Game.new(game_module)}
+  def init(cassette) do
+    {:ok, Game.new(cassette)}
   end
 
   @impl true
   def handle_call({:join, player}, from, %{started: false} = game) do
-    start_round(game.module)
+    start_round(game.cassette)
     handle_call({:join, player}, from, Game.start(game))
   end
   def handle_call({:join, player}, _, game) do
@@ -41,9 +45,12 @@ defmodule GameMaster do
   def handle_call({:act, player_id, actions}, _, game) do
     {:reply, :ok, Game.act(game, player_id, actions)}
   end
+  def handle_call(:players, _, game) do
+    {:reply, game.players, game}
+  end
 
   @impl true
   def handle_cast(:start_round, game) do
-    {:noreply, Game.advance(game, after: fn -> start_round(game.module) end)}
+    {:noreply, Game.advance(game, after: fn -> start_round(game.cassette) end)}
   end
 end

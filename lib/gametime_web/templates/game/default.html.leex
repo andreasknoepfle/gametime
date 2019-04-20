@@ -1,0 +1,17 @@
+<div>
+  <h1><%= @cassette.display_name %></h1>
+  <h2>Players:</h2>
+  <ul>
+    <%= for {_, player} <- @players do %>
+      <li><%= player.name %></li>
+    <% end %>
+  </ul>
+
+  <div class="nes-container is-rounded">
+    <pre>
+      <code>
+        <%= inspect(@state, pretty: true) %>
+      </code>
+    </pre>
+  </div>
+</div>

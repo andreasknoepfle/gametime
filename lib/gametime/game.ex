@@ -1,10 +1,11 @@
 defmodule Game do
-  defstruct [:name, :players, :state, :actions, :module, :started]
+  defstruct [:name, :players, :state, :actions, :module, :started, :cassette]
 
-  def new(module) do
-    {:ok, state} = module.init()
+  def new(cassette) do
+    {:ok, state} = cassette.module.init()
     %__MODULE__{
-      module: module,
+      cassette: cassette,
+      module: cassette.module,
       players: %{},
       actions: %{},
       state: state,
@@ -24,6 +25,7 @@ defmodule Game do
   def add_player(%{players: players} = game, player) do
     {:ok, state} = game.module.add_player(game.state, player.id)
     %{game | state: state, players: Map.put(players, player.id, player)}
+    |> update_live_views("players")
   end
 
   def act(%{actions: actions} = game, player_id, player_actions) do
@@ -38,6 +40,7 @@ defmodule Game do
       {:finish, state} ->
         %{game | state: state}
     end
+    |> update_live_views("state")
   end
 
   defp schedule_turn(game, callback) do
@@ -60,5 +63,16 @@ defmodule Game do
 
   defp clear_actions(game) do
     %{game | actions: %{}}
+  end
+
+  defp update_live_views(game = %{state: state}, event = "state") do
+    update_live_views(game, event, state)
+  end
+  defp update_live_views(game = %{players: players}, event = "players") do
+    update_live_views(game, event, players)
+  end
+  defp update_live_views(game = %{cassette: cassette}, event, payload) do
+    GametimeWeb.Endpoint.broadcast("game:state:" <> cassette.name, event, payload)
+    game
   end
 end

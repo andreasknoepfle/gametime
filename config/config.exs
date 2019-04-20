@@ -12,11 +12,14 @@ config :gametime, GametimeWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "2wjFhse5c5SUGsoo8ryLK8l4erSPcyFcq0qpk3qezvcEF6XJJhGh1HxhhghFX31a",
   render_errors: [view: GametimeWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Gametime.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Gametime.PubSub, adapter: Phoenix.PubSub.PG2],
+  live_view: [
+    signing_salt: "jtzRjRXhBJC8220WfLACYcfZC7wumlMl"
+  ]
 
-config :gametime, games: %{
-  "example" => Game.Example,
-  "civwars" => Civwars
+config :gametime, cassettes: %{
+  "example" => [module: Game.Example, display_name: "Example Game"],
+  "civwars" => [module: Civwars, display_name: "Civwars"]
 }
 
 # Configures Elixir's Logger
