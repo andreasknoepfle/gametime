@@ -27,6 +27,14 @@ defmodule Game do
     {:ok, state} = game.module.add_player(game.state, player.id)
     %{game | state: state, players: Map.put(players, player.id, player)}
     |> update_live_views("players")
+    |> update_live_views("state")
+  end
+
+  def remove_player(%{players: players} = game, player_id) do
+    state = game.module.remove_player(game.state, player_id)
+    %{game | state: state, players: Map.delete(players, player_id)}
+    |> update_live_views("players")
+    |> update_live_views("state")
   end
 
   def act(%{actions: actions} = game, player_id, player_actions) do

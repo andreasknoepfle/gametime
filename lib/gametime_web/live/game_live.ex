@@ -38,4 +38,8 @@ defmodule GametimeWeb.GameLive do
     GameMaster.reset(socket.assigns.cassette)
     {:noreply, socket}
   end
+  def handle_event("kick", player_id, socket) do
+    GameMaster.kick(socket.assigns.cassette, player_id)
+    {:noreply, socket}
+  end
 end

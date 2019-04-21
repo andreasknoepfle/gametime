@@ -36,6 +36,10 @@ defmodule GameMaster do
     GenServer.cast(cassette.module, :reset)
   end
 
+  def kick(cassette, player_id) do
+    GenServer.cast(cassette.module, {:kick, player_id})
+  end
+
   @impl true
   def init(cassette) do
     {:ok, Game.new(cassette)}
@@ -67,5 +71,8 @@ defmodule GameMaster do
   def handle_cast(:start, %{started: false} = game) do
     start_round(game.cassette)
     {:noreply, Game.start(game)}
+  end
+  def handle_cast({:kick, player_id}, game) do
+    {:noreply, Game.remove_player(game, player_id)}
   end
 end
