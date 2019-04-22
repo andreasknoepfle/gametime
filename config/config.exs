@@ -19,7 +19,7 @@ config :gametime, GametimeWeb.Endpoint,
 
 config :gametime, cassettes: %{
   "example" => [module: Game.Example, display_name: "Example Game"],
-  "civwars" => [module: Civwars, display_name: "Civwars"]
+  "civwars" => [module: Civwars, display_name: "Civwars", template: "civwars.html"]
 }
 
 # Configures Elixir's Logger

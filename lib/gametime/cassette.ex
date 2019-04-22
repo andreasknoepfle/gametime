@@ -1,5 +1,5 @@
 defmodule Cassette do
-  defstruct [:module, :display_name, :name]
+  defstruct [:module, :display_name, :name, :template]
 
   def load(name) do
     case config_for_name(name) do
