@@ -24,8 +24,8 @@ defmodule GametimeWeb.GameLive do
   def handle_info(%Broadcast{topic: _, event: "players", payload: payload}, socket) do
     {:noreply, update(socket, :players, fn (_) -> payload end)}
   end
-  def handle_info(%Broadcast{topic: _, event: "started"}, socket) do
-    {:noreply, update(socket, :started, fn (_) -> true end)}
+  def handle_info(%Broadcast{topic: _, event: "started", payload: %{started: started}}, socket) do
+    {:noreply, update(socket, :started, fn (_) -> started end)}
   end
 
   def handle_event("start", _value, socket) do

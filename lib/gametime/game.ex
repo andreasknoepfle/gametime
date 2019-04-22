@@ -21,11 +21,13 @@ defmodule Game do
   def reset(game) do
     {:ok, state} = game.module.init()
     %{game | state: state}
+    |> respawn_all_players
+    |> update_live_views("state")
   end
 
   def add_player(%{players: players} = game, player) do
-    {:ok, state} = game.module.add_player(game.state, player.id)
-    %{game | state: state, players: Map.put(players, player.id, player)}
+    %{game | players: Map.put(players, player.id, player)}
+    |> spawn_player(player.id)
     |> update_live_views("players")
     |> update_live_views("state")
   end
@@ -80,11 +82,21 @@ defmodule Game do
   defp update_live_views(game = %{players: players}, event = "players") do
     update_live_views(game, event, players)
   end
-  defp update_live_views(game, event) do
-    update_live_views(game, event, %{})
+  defp update_live_views(game = %{started: started}, event = "started") do
+    update_live_views(game, event, %{started: started})
   end
   defp update_live_views(game = %{cassette: cassette}, event, payload) do
     GametimeWeb.Endpoint.broadcast("game:state:" <> cassette.name, event, payload)
     game
+  end
+
+  defp spawn_player(game = %{state: state}, player_id) do
+    {:ok, new_state} = game.module.add_player(state, player_id)
+    %{game | state: new_state}
+  end
+
+  defp respawn_all_players(game = %{players: players}) do
+    Map.keys(players)
+    |> Enum.reduce(game, fn (id, game) -> spawn_player(game, id) end)
   end
 end
