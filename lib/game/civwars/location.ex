@@ -9,7 +9,27 @@ defmodule Civwars.Location do
     }
   end
 
-  def distance(%__MODULE__{} = a, %__MODULE__{} = b) do
+  def move_towards(%__MODULE__{} = a, %__MODULE__{} = b, speed) do
+    d = distance(a, b)
+
+    if speed >= d do
+      b
+    else
+      dx =
+        (b.x - a.x) * (speed / d)
+        |> :math.floor()
+        |> trunc()
+
+      dy =
+        (b.y - a.y) * (speed / d)
+        |> :math.floor()
+        |> trunc()
+
+      %{a | x: a.x + dx, y: a.y + dy}
+    end
+  end
+
+  defp distance(a, b) do
     cx =
       (a.x - b.x)
       |> abs()

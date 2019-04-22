@@ -1,0 +1,47 @@
+<div>
+  <h1><%= @cassette.display_name %></h1>
+  <%= if(!@started) do %>
+    <button phx-click="start" class="nes-btn">Start</button>
+  <% end %>
+  <button phx-click="reset" class="nes-btn">Reset</button>
+  <h2>Players:</h2>
+  <ul>
+    <%= for {_, player} <- @players do %>
+      <li>
+        <%= player.name %>
+        <button
+          phx-click="kick"
+          phx-value="<%= player.id %>"
+        >Kick</button>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="nes-container is-rounded">
+    <svg
+      viewBox="-10 -10 110 110"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <%= for {_, village} <- @state.villages do %>
+        <circle
+          cx="<%= village.location.x %>"
+          cy="<%= village.location.y %>"
+          r="<%= max(0.4, village.units / 30.0) %>"
+          fill="<%= hex_color_from_uuid(village.owner) %>"
+          stroke="black"
+          stroke-width="0.2"
+        />
+      <% end %>
+
+      <%= for move <- @state.moves do %>
+        <circle
+          cx="<%= move.location.x %>"
+          cy="<%= move.location.y %>"
+          r="<%= max(0.2, move.units / 30.0) %>"
+          fill="<%= hex_color_from_uuid(move.owner) %>"
+        />
+      <% end %>
+    </svg>
+  </div>
+</div>

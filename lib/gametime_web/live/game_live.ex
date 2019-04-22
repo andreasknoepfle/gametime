@@ -14,8 +14,8 @@ defmodule GametimeWeb.GameLive do
     {:ok, updated_socket}
   end
 
-  def render(assigns) do
-    GametimeWeb.GameView.render("default.html", assigns)
+  def render(%{cassette: cassette} = assigns) do
+    GametimeWeb.GameView.render(cassette.template || "default.html", assigns)
   end
 
   def handle_info(%Broadcast{topic: _, event: "state", payload: payload}, socket) do
