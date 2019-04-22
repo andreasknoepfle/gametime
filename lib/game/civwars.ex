@@ -44,7 +44,7 @@ defmodule Civwars do
   defp apply_player_actions({player_id, player_actions}, board) do
     Enum.reduce(player_actions, board, fn action, board ->
       {_result, board_with_move} =
-        Board.move(board, player_id, action.from, action.to)
+        Board.move(board, player_id, action["from"], action["to"])
 
       board_with_move
     end)
