@@ -27,8 +27,19 @@
         <circle
           cx="<%= village.location.x %>"
           cy="<%= village.location.y %>"
-          r="<%= max(0.2, village.units / 30.0) %>"
+          r="<%= max(0.4, village.units / 30.0) %>"
           fill="<%= hex_color_from_uuid(village.owner) %>"
+          stroke="black"
+          stroke-width="0.2"
+        />
+      <% end %>
+
+      <%= for move <- @state.moves do %>
+        <circle
+          cx="<%= move.location.x %>"
+          cy="<%= move.location.y %>"
+          r="<%= max(0.2, move.units / 30.0) %>"
+          fill="<%= hex_color_from_uuid(move.owner) %>"
         />
       <% end %>
     </svg>

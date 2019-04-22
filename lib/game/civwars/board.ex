@@ -31,12 +31,11 @@ defmodule Civwars.Board do
     target = Map.get(board.villages, to)
 
     with :ok <- validate_source_village(source, player),
-         :ok <- validate_target_village(target),
-         distance <- Location.distance(source.location, target.location) do
+         :ok <- validate_target_village(target) do
 
       {source_without_units, units} = Village.recruit_attack_party(source)
 
-      move = Move.new(to, distance, units, player)
+      move = Move.new(to, target.location, source.location, units, player)
 
       new_board =
         %{
