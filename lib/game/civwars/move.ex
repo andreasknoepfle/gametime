@@ -2,17 +2,21 @@ defmodule Civwars.Move do
   alias Civwars.Location
 
   @derive Jason.Encoder
-  defstruct [:to, :destination, :location, :units, :owner]
+  defstruct [:to, :destination, :source, :location, :units, :owner, :duration, :id]
 
   @speed 5
 
-  def new(to, destination, location, units, owner) do
+  def new(to, destination, source, units, owner) do
+    distance = Location.distance(source, destination)
     %__MODULE__{
       to: to,
       destination: destination,
-      location: location,
+      source: source,
+      location: source,
       units: units,
-      owner: owner
+      owner: owner,
+      duration: duration(distance),
+      id: SecureRandom.uuid()
     }
   end
 
@@ -23,4 +27,9 @@ defmodule Civwars.Move do
 
   def arrived?(%__MODULE__{destination: x, location: x}), do: true
   def arrived?(%__MODULE__{}), do: false
+
+  defp duration(distance) do
+    ((:math.ceil(distance/@speed)) * 500)
+    |> Float.to_string(decimals: 4)
+  end
 end

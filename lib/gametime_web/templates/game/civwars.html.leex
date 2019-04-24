@@ -23,6 +23,44 @@
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <%= for move <- @state.moves do %>
+        <line
+          x1="<%= move.source.x %>"
+          y1="<%= move.source.y %>"
+          x2="<%= move.destination.x %>"
+          y2="<%= move.destination.y %>"
+          stroke="#eeeeee"
+          stroke-width="0.7"
+        />
+      <% end %>
+      <%= for move <- @state.moves do %>
+        <circle
+          cx="<%= move.source.x %>"
+          cy="<%= move.source.y %>"
+          r="<%= max(0.2, move.units / 30.0) %>"
+          fill="<%= hex_color_from_uuid(move.owner) %>"
+          id="<%= move.id %>"
+        >
+          <animate
+            attributeType="XML"
+            attributeName="cx"
+            from="<%= move.source.x %>"
+            to="<%= move.destination.x %>"
+            dur="<%= move.duration%>ms"
+            begin="DOMNodeInserted"
+            fill="freeze"
+          ></animate>
+          <animate
+            attributeType="XML"
+            attributeName="cy"
+            from="<%= move.source.y %>"
+            to="<%= move.destination.y %>"
+            dur="<%= move.duration%>ms"
+            begin="DOMNodeInserted"
+            fill="freeze"
+          ></animate>
+        </circle>
+      <% end %>
       <%= for {_, village} <- @state.villages do %>
         <circle
           cx="<%= village.location.x %>"
@@ -34,14 +72,6 @@
         />
       <% end %>
 
-      <%= for move <- @state.moves do %>
-        <circle
-          cx="<%= move.location.x %>"
-          cy="<%= move.location.y %>"
-          r="<%= max(0.2, move.units / 30.0) %>"
-          fill="<%= hex_color_from_uuid(move.owner) %>"
-        />
-      <% end %>
     </svg>
   </div>
 </div>

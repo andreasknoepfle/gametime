@@ -15,7 +15,7 @@
 </section>
 
 <ul class="nes-list is-disc">
-  <%= for cassette <- cassettes do %>
+  <%= for cassette <- cassettes() do %>
     <li><%= link(cassette.display_name, to: "/games/" <> cassette.name) %></li>
   <% end %>
 </ul>
