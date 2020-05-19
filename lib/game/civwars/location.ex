@@ -29,20 +29,18 @@ defmodule Civwars.Location do
     end
   end
 
-  defp distance(a, b) do
+  def distance(a, b) do
     cx =
       (a.x - b.x)
       |> abs()
       |> :math.pow(2)
 
     cy =
-      (a.x - b.x)
+      (a.y - b.y)
       |> abs()
       |> :math.pow(2)
 
     (cx + cy)
     |> :math.sqrt()
-    |> :math.ceil()
-    |> trunc()
   end
 end
